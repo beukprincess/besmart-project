@@ -8,6 +8,7 @@ load_dotenv()
 class Config:
     token: str
     admin_ids: list[int]
+    mono_api: str
 
 adm_ids_str = os.getenv("ADMIN_IDS", "")
 
@@ -18,5 +19,6 @@ else:
 
 config = Config(
     token = os.getenv("BOT_TOKEN"),
-    admin_ids=adm_ids_list
+    admin_ids=adm_ids_list,
+    mono_api = os.getenv("MONO_API")
 )
