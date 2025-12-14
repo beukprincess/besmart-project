@@ -6,7 +6,7 @@ from aiogram.filters import CommandStart
 from keyboard.reply import get_main_kb, get_menu_kb
 from aiogram.exceptions import TelegramBadRequest
 from database.db import db_client
-
+from states import Registration
 
 
 
