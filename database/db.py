@@ -29,10 +29,10 @@ class Database:
             
             await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (1, 'Цікава інформатика(6-9років)', 100, 'Пн, Ср 19:00')")
             await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (2, 'Базова інформатика(8-11 років)', 200, 'Вт, Чт 18:30')")
-            await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (2, 'Fround-End розробка(12-16 років)', 175, 'Вт, Чт 18:30')")
-            await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (2, 'Основи програмування Python(12-16 років)', 150, 'Вт, Чт 18:30')")
-            await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (2, '3D моделювання(12-16 років)', 300, 'Вт, Чт 18:30')")
-            await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (2, 'Комп'ютерна грамотність для дорослих(18+)', 250, 'Вт, Чт 18:30')")
+            await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (3, 'Fround-End розробка(12-16 років)', 175, 'Вт, Чт 18:30')")
+            await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (4, 'Основи програмування Python(12-16 років)', 150, 'Вт, Чт 18:30')")
+            await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (5, '3D моделювання(12-16 років)', 300, 'Вт, Чт 18:30')")
+            await db.execute("INSERT OR IGNORE INTO courses (course_id, name, price, schedule) VALUES (6, 'Компютерна грамотність для дорослих(18+)', 250, 'Вт, Чт 18:30')")
 
             await db.commit()
 

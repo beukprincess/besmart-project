@@ -14,7 +14,7 @@ else:
     print("Token was found successfuly")
 
 async def on_startup():
-    await db_client.create_table()
+    await db_client.create_tables()
     print("Database connected;")
 
 async def main():

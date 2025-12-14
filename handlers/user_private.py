@@ -3,6 +3,8 @@ from aiogram import Router, F, types
 from aiogram.types import FSInputFile, CallbackQuery
 from services.logic import besmart_service, Result
 from aiogram.filters import CommandStart
+from aiogram.fsm.context import FSMContext
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from keyboard.reply import get_main_kb, get_menu_kb
 from aiogram.exceptions import TelegramBadRequest
 from database.db import db_client
@@ -13,35 +15,28 @@ user_router = Router()
 
 @user_router.message(CommandStart())
 async def start_cmd(message: types.Message):
-    username = message.from_user.username
-    if not username:
-        username = message.from_user.first_name
+    courses = await db_client.get_courses()
+    builder = InlineKeyboardBuilder()
+    for course in courses:
+        # course = (id, name, price, schedule)
+        builder.button(text=f"{course[1]}", callback_data=f"view_course:{course[0]}")
+    builder.adjust(1)
     
-    await db_client.add_user(message.from_user.id, username)
-    print(f"User with id {message.from_user.id} was successfuly added.")
-    await message.answer(
-    "Вітаю тебе у курсах BeSmart!",
-    reply_markup = get_main_kb()
+    await message.answer("Привіт! Обери курс для навчання:", reply_markup=builder.as_markup())
+
+@user_router.callback_query(F.data.startswith("view_course:"))
+async def view_course(callback: types.CallbackQuery, state: FSMContext):
+    course_id = int(callback.data.split(":")[1])
+    course = await db_client.get_course_by_id(course_id)
+    
+    await state.update_data(course_id=course_id, schedule=course[3])
+    
+    builder = InlineKeyboardBuilder()
+    builder.button(text=f"Оплатити {course[2]} грн", callback_data="pay_confirm")
+    builder.button(text="Назад", callback_data="back_to_menu")
+    
+    await callback.message.edit_text(
+        f"Курс: <b>{course[1]}</b>\nЦіна: {course[2]} грн\nРозклад: {course[3]}",
+        reply_markup=builder.as_markup(),
+        parse_mode="HTML"
     )
-    @user_router.message(Command("pay"))
-    async def pay_cmd(message: types.Message):
-        username = message.from_user.username
-        if not username:
-            username = message.from_user.first_name
-        unique_code = f"user_{user_id}" 
-        price_kopeks = 1000
-        await db_client.add_user(message.from_user.id, username)
-        text = (
-        f"**Рахунок на оплату**\n"
-        f"Сума: 1 грн\n\n"
-        f"1. Перейдіть за посиланням: ---\n"
-        f"2. Вкажіть суму **{price_kopeks/100} грн**\n"
-        f"3. В коментарі до платежу ОБОВ'ЯЗКОВО вкажіть: `{unique_code}`\n\n"
-        f"Після оплати натисніть кнопку 'Я оплатив'."
-        )
-    
-        kb = types.InlineKeyboardMarkup(inline_keyboard=[
-            [types.InlineKeyboardButton(text="Я оплатив", callback_data=f"check_{unique_code}_{price_kopeks}")]
-        ])
-    
-        await message.answer(text, reply_markup=kb, parse_mode="Markdown")
